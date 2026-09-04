@@ -4,6 +4,7 @@
     --theme-orange: #D96C27;
     --theme-black: #2A2522;
     --theme-darker: #1A1614;
+    --theme-darker-orange: #CB4900;
 }
 
 body {
@@ -113,7 +114,7 @@ section {
 }
 
 a {
-  color: var(--theme-orange);
+  color: var(--theme-darker-orange);
   text-decoration: none;
   font-weight: bold;
 }
