@@ -13,7 +13,7 @@ function loadMenu(basePath) {
                 <a href="#" class="nav-dropdown-toggle">Assignments</a>
                 <ul class="dropdown-content-nav">
                     <li><a href="${basePath}index.html">Assignment 1</a></li>
-                    <li><a href="${basePath}Assignments/assignment2.html">Assignment 2</a></li>
+                    <li><a href="${basePath}assignments/assignment2.html">Assignment 2</a></li>
                 </ul>
             </li>
             <li class="dropdown-nav">
