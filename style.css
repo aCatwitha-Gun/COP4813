@@ -1,0 +1,136 @@
+:root {
+    --theme-cream: #F4EBE1;
+    --theme-white: #FFFFFF;
+    --theme-orange: #D96C27;
+    --theme-black: #2A2522;
+    --theme-darker: #1A1614;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: var(--theme-cream);
+  color: var(--theme-black);
+}
+
+/* navigation menu styling */
+
+#nav-placeholder {
+    display: contents;
+}
+
+.main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--theme-black);
+}
+
+.main-nav > ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.main-nav a {
+  display: block;
+  padding: 15px 25px;
+  color: var(--theme-white);
+  text-decoration: none;
+  font-weight: bold;
+  font-family: sans-serif;
+  border-radius: 6px;
+  border: 1px solid var(--theme-darker);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.main-nav a:hover {
+  background-color: var(--theme-orange);
+  color: var(--theme-white);
+}
+
+.dropdown-nav {
+  position: relative;
+}
+
+.dropdown-content-nav {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--theme-black);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dropdown-content-nav a {
+  display: block;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--theme-darker)
+}
+
+.dropdown-nav:hover .dropdown-content-nav {
+  display: block;
+}
+
+.dropdown-content-nav a:hover {
+  background-color: var(--theme-orange);
+}
+
+
+header {
+  background-color: var(--theme-orange);
+  color: var(--theme-white);
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+
+main {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  background-color: var(--theme-white);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+a {
+  color: var(--theme-orange);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--theme-black);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin-top: 1rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: var(--theme-black);
+  color: var(--theme-white);
+  margin-top: auto;
+}
