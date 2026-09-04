@@ -134,3 +134,13 @@ footer {
   color: var(--theme-white);
   margin-top: auto;
 }
+
+.headshot {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--theme-orange);
+  display: block;
+  margin: 1.5rem auto;
+}
