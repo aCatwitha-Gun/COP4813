@@ -3,6 +3,9 @@ const phoneInput = document.getElementById('phone');
 const birthDateInput = document.getElementById('birthDate');
 const securityInput = document.getElementById('security');
 const errorBox = document.getElementById('error-box');
+const confirmationScreen = document.getElementById('pixel-confirmation-screen');
+const editBtn = document.getElementById('btn-edit');
+const confirmBtn = document.getElementById('btn-confirm');
 
 // Animations when an invalid input is detected and error box visibility toggle
 // Helper function to handle errors
@@ -44,6 +47,28 @@ form.addEventListener('input', function() {
 
 // Final validation on submit
 form.addEventListener('submit', function(e) {
+
+    // Set invalid forms entries to trigger error box instead of default browser tool tip
+    if (!form.checkValidity()) {
+        e.preventDefault(); // Prevent form from submitting
+
+        // Find first invalid form element
+        const firstInvalid = form.querySelector(':invalid');
+
+        // Determine reason for invalid field and give helpful message
+        let errorMessage = "Please fill out this field.";
+
+        if (firstInvalid.validity.valueMissing) {
+            errorMessage = "This field is required and cannot be blank.";
+        } else if (firstInvalid.validity.typeMismatch) {
+            errorMessage = "Please enter a valid format.";
+        } else if (firstInvalid.validity.patternMismatch) {
+            // Sets the 'title' from the field if there is one to make showing format requirements easier
+            errorMessage = firstInvalid.title || "Please match the required format.";
+        }
+        triggerError(firstInvalid, errorMessage);
+        return;
+    }
 
     // Date validation
     const birthDateValue = birthDateInput.value;
@@ -91,5 +116,38 @@ form.addEventListener('submit', function(e) {
         triggerError(phoneInput, "Please enter a valid 10 digit phone number.");
         return;
     }
+
+    // All validation has passed, move to confirmation screen
+    e.preventDefault(); // Prevent form from submitting
+
+    // Combine the address fields
+    const street = document.getElementById('address').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const zip = document.getElementById('zip').value;
+
+    // Copy values from inputs to the confirmation span
+    document.getElementById('conf-name').textContent = document.getElementById('firstName').value + " " + document.getElementById('lastName').value;
+    document.getElementById('conf-address').textContent = `${street}, ${city}, ${state} ${zip}`;
+    document.getElementById('conf-phone').textContent = document.getElementById('phone').value;
+    document.getElementById('conf-email').textContent = document.getElementById('email').value;
+    document.getElementById('conf-birthDate').textContent = document.getElementById('birthDate').value;
+    document.getElementById('conf-message').textContent = document.getElementById('message').value;
+
+    // Swap the screens
+    form.classList.add('hidden');
+    confirmationScreen.classList.remove('hidden');
 });
 
+// Edit button functionality
+editBtn.addEventListener('click', function() {
+    // Swap back to form
+    confirmationScreen.classList.add('hidden');
+    form.classList.remove('hidden');
+});
+
+// Confirmation button functionality
+confirmBtn.addEventListener('click', function() {
+    // Temp alert to let user know form submission is complete
+    alert("Form submission complete.");
+});

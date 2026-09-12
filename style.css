@@ -243,7 +243,8 @@ footer {
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-right: 8px;
+  padding-right: 15px;
+  scrollbar-gutter: stable;
 }
 
 .paper-form h3 {
@@ -296,12 +297,6 @@ input, textarea {
   border: 2px solid var(--theme-white);
 }
 
-/* Invalid form input styling */
-input:not(:placeholder-shown):invalid {
-  border-color: var(--theme-darker-orange);
-  background-color: var(--theme-orange)
-}
-
 /* Form error detected styling */
 .pixel-error-box {
   /* position error box to appear above form container */
@@ -352,4 +347,58 @@ input:not(:placeholder-shown):invalid {
   animation: errorShake 0.3s ease-in-out;
   border-color: var(--theme-darker-orange);
   background-color: var(--theme-orange)
+}
+
+/* Utility class for swapping screens */
+.hidden {
+  display: none !important;
+}
+
+#pixel-confirmation-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 15px;
+  scrollbar-gutter: stable;
+}
+
+#pixel-confirmation-screen h3 {
+  font-family: 'Press Start 2P', system-ui;
+  font-size: 16px;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.confirm-details p {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  margin: 5px 0;
+  border-bottom: 1px dashed var(--theme-black)
+}
+
+/* Side-by-side buttons for confirmation screen */
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 15px;
+}
+
+.button-row button {
+  flex: 1;
+  font-family: 'Press Start 2P', system-ui;
+  font-size: 10px;
+  padding: 12px 5px;
+  cursor: pointer;
+  border: 2px solid var(--theme-black);
+}
+
+.edit-btn {
+  background-color: var(--theme-cream);
+}
+
+.confirm-btn {
+  background-color: var(--theme-cream);
 }
