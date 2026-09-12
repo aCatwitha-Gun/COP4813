@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="COP4813 Assignment 3. Responsive form with field validation.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COP4813 Assignment 3: Forms</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../style.css">
+    </head>
+    <body>
+        <div id="nav-placeholder"></div>
+        
+        <script src="../menu.js"></script>
+        <script>loadMenu("../");</script>
+
+        <header>
+            <h1>COP4813 Class Project Assignment 3</h1>
+        </header>
+        <main>
+            <div class="letter-wrapper">
+                <div class="animated-letter" id="letter-sprite"></div>
+
+                <div id="error-box" class="pixel-error-box hidden"></div>
+
+                <div class="paper-form-overlay" id="paper-form">
+                    <form class="paper-form" id="pixel-form">
+                        <h3>Enter your info below</h3>
+                        <div class="input-row">
+                            <input type="text" id="firstName" placeholder="First Name" required/>
+                            <input type="text" id="lastName" placeholder="Last Name" required/>
+                        </div>
+                        <input type="text" id="address" placeholder="Address" required/>
+                        <div class="input-row">
+                            <input type="text" id="city" placeholder="City" required/>
+                            <input type="text" id="state" placeholder="State" required/>
+                        </div>
+                        <input type="text" id="zip" placeholder="Zip" pattern="\d{5}" title="5 digit zip code" required/>
+                        <input type="tel" id="phone" placeholder="(000)000-0000" required/>
+                        <input type="email" id="email" placeholder="Email Address" required/>
+                        <input type="text" id="birthDate" placeholder="MM/DD/YYYY" pattern="\d{2}/\d{2}/\d{4}" title="Format: MM/DD/YYYY" required/>
+                        <textarea id="message" placeholder="Your message.." required></textarea>
+                        <input type="text" id="security" placeholder="What is 1 + 2?" required/>
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+            
+        </main>
+
+        <footer>
+            <p>Created by Noah Maynard</p>
+        </footer>
+        <script src="../form-animation.js"></script>
+        <script src="../form-field-validation.js"></script>
+    </body>
+</html>
