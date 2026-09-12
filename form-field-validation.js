@@ -85,6 +85,7 @@ form.addEventListener('submit', function(e) {
     // Create a date object
     // JS months are 0-indexed, so target month is month value - 1
     const selectedDate = new Date(year, month - 1, day);
+    const pastDate = new Date(1900, 12, 31);
     const currentDate = new Date();
 
     // Check if birth date is a real calendar date
@@ -98,6 +99,12 @@ form.addEventListener('submit', function(e) {
     if (selectedDate > currentDate) {
         e.preventDefault(); // Prevent form from submitting
         triggerError(birthDateInput, "Sure thing time traveler... Enter a past date please");
+        return;
+    }
+
+    if (selectedDate < pastDate) {
+        e.preventDefault(); // Prevent form from submitting
+        triggerError(birthDateInput, "While being a vampire is not explicitly against the TOS, I'd prefer to remain ignorant. Please enter a date that makes you less than 126 years old.");
         return;
     }
 
@@ -147,6 +154,37 @@ editBtn.addEventListener('click', function() {
 
 // Confirmation button functionality
 confirmBtn.addEventListener('click', function() {
-    // Temp alert to let user know form submission is complete
-    alert("Form submission complete.");
+    const targetEmail = "noah_maynard@daytonastate.edu";
+    const emailSubject = "COP 4813 A3 Pixel Form Submission";
+
+    // Form data
+    const name = document.getElementById('conf-name').textContent;
+    const address = document.getElementById('conf-address').textContent;
+    const phone = document.getElementById('conf-phone').textContent;
+    const email = document.getElementById('conf-email').textContent;
+    const bday = document.getElementById('conf-birthDate').textContent;
+    const message = document.getElementById('conf-message').textContent;
+
+    // Format body of the email
+    const emailBody = `
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+Birthday: ${bday}
+Address: ${address}
+
+Message:
+${message} 
+    `;
+
+    // Encode subject and body to prevent special characters from breaking the link
+    const encodedSubject = encodeURIComponent(emailSubject);
+    const encodedBody = encodeURIComponent(emailBody.trim());
+
+    // Construct mailto string
+    const mailtoLink = `mailto:${targetEmail}?subject=${encodedSubject}&body=${encodedBody}`;
+
+    // Tell browser to open user's default email client
+    window.location.href = mailtoLink;
 });

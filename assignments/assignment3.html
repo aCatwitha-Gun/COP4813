@@ -26,23 +26,28 @@
                 <div id="error-box" class="pixel-error-box"></div>
 
                 <div class="paper-form-overlay" id="paper-form">
-                    <form class="paper-form" id="pixel-form" novalidate>
+                    <form class="paper-form" id="pixel-form" aria-labelledby="form-title" novalidate>
                         <h3>Enter your info below</h3>
+
+                        <!-- Hidden instructions for screen readers to explain specific formats -->
+                        <span id="zip-desc" class="sr-only">Must be a 5 digit zip code.</span>
+                        <span id="date-desc" class="sr-only">Enter date in two-digit month, two-digit day, four-digit year format.</span>
+
                         <div class="input-row">
-                            <input type="text" id="firstName" placeholder="First Name" required/>
-                            <input type="text" id="lastName" placeholder="Last Name" required/>
+                            <input type="text" id="firstName" aria-label="First Name" placeholder="First Name" required/>
+                            <input type="text" id="lastName" aria-label="Last Name" placeholder="Last Name" required/>
                         </div>
-                        <input type="text" id="address" placeholder="Address" required/>
+                        <input type="text" id="address" aria-label="Street address" placeholder="Address" required/>
                         <div class="input-row">
-                            <input type="text" id="city" placeholder="City" required/>
-                            <input type="text" id="state" placeholder="State" required/>
+                            <input type="text" id="city" aria-label="City" placeholder="City" required/>
+                            <input type="text" id="state" aria-label="State" placeholder="State" required/>
                         </div>
-                        <input type="text" id="zip" placeholder="Zip" pattern="\d{5}" title="Please enter a 5 digit zip code." required/>
-                        <input type="tel" id="phone" placeholder="(000)000-0000" required/>
-                        <input type="email" id="email" placeholder="Email Address" required/>
-                        <input type="text" id="birthDate" placeholder="MM/DD/YYYY" pattern="\d{2}/\d{2}/\d{4}" title="Please enter a birth date in MM/DD/YYYY format." required/>
-                        <textarea id="message"  rows="4" placeholder="Your message..." required></textarea>    
-                        <input type="text" id="security" placeholder="What is 1 + 2?" required/>
+                        <input type="text" id="zip" aria-label="Zip Code" aria-labelledby="zip-desc" placeholder="5 Digit Zipcode" pattern="\d{5}" title="Please enter a 5 digit zip code." required/>
+                        <input type="tel" id="phone" aria-label="Phone Number" placeholder="(000)000-0000" required/>
+                        <input type="email" id="email" aria-label="Email Address" placeholder="Email Address" required/>
+                        <input type="text" id="birthDate" aria-label="Birth Date" aria-describedby="date-desc" placeholder="MM/DD/YYYY" pattern="\d{2}/\d{2}/\d{4}" title="Please enter a birth date in MM/DD/YYYY format." required/>
+                        <textarea id="message"  rows="4" aria-label="Your Message" placeholder="Your message..." required></textarea>    
+                        <input type="text" id="security" aria-label="Security Check. What is 1 plus 2?" placeholder="What is 1 + 2?" required/>
                         <button type="submit">Send</button>
                     </form>
                     <div id="pixel-confirmation-screen" class="hidden">
