@@ -213,9 +213,18 @@ footer {
   animation: openLetter 2s steps(14) forwards;
 }
 
+.animated-letter.is-closing {
+  animation: closeLetter 2s steps(14) forwards;
+}
+
 @keyframes openLetter {
   0% { background-position: 0 0; }
   100% { background-position: -4480px 0; }
+}
+
+@keyframes closeLetter {
+  0% { background-position: -4480px 0; }
+  100% { background-position: 0 0; }
 }
 
 .paper-form-overlay {

@@ -15,5 +15,7 @@ letterSprite.addEventListener('click', function() {
 // Listen for animation to finish
 letterSprite.addEventListener('animationend', function() {
     // Fade form in over frozen final frame of animation
-    paperForm.classList.add('is-visible');
+    if (this.classList.contains('is-opening')) {
+        paperForm.classList.add('is-visible');
+    }
 });

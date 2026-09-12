@@ -6,6 +6,7 @@ const errorBox = document.getElementById('error-box');
 const confirmationScreen = document.getElementById('pixel-confirmation-screen');
 const editBtn = document.getElementById('btn-edit');
 const confirmBtn = document.getElementById('btn-confirm');
+const closeAnimatedLetter = document.getElementById('letter-sprite');
 
 // Animations when an invalid input is detected and error box visibility toggle
 // Helper function to handle errors
@@ -187,4 +188,23 @@ ${message}
 
     // Tell browser to open user's default email client
     window.location.href = mailtoLink;
+
+    // close the form and reverse the letter animation
+    confirmationScreen.classList.add('hidden');
+    
+    const paperOverlay = document.getElementById('paper-form');
+    paperOverlay.classList.remove('is-visible');
+
+    // swap sprite animation from is-opening to is-closing to reverse animation
+    closeAnimatedLetter.classList.remove('is-opening');
+    void closeAnimatedLetter.offsetWidth; // redraw the element so animation is triggered
+    closeAnimatedLetter.classList.add('is-closing');
+
+    setTimeout(() => { // reset form state in case user reclicks the letter
+        form.reset();
+        form.classList.remove('hidden');
+        closeAnimatedLetter.classList.remove('is-closing');
+        closeAnimatedLetter.style.cursor = 'pointer';
+    }, 2000); // 2000ms to match 2s length of animation
+
 });
