@@ -7,6 +7,19 @@ const confirmationScreen = document.getElementById('pixel-confirmation-screen');
 const editBtn = document.getElementById('btn-edit');
 const confirmBtn = document.getElementById('btn-confirm');
 const closeAnimatedLetter = document.getElementById('letter-sprite');
+const allInputs = form.querySelectorAll('input, textarea');
+
+// When any input is tapped, scroll wrapper into the center of the view smoothly. Account for mobile keyboard taking up half the screen
+allInputs.forEach(input => {
+    input.addEventListener('focus', function() {
+        const wrapper = document.querySelector('.letter-wrapper');
+
+        // Set delay to allow for mobile keyboard to finish opening
+        setTimeout(() => {
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+    });
+});
 
 // Animations when an invalid input is detected and error box visibility toggle
 // Helper function to handle errors
