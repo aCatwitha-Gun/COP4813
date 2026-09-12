@@ -76,7 +76,6 @@ form.addEventListener('submit', function(e) {
     if (birthDateValue.length !== 10 ) {
         e.preventDefault(); // Prevent form from submitting
         triggerError(birthDateInput, "Please enter valid birth date format: MM/DD/YYYY");
-        birthDateValue.focus();
         return;
     }
 
