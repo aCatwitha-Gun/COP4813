@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COP4813 Assignment 4: Plotting a Parametric Heart</title>
+        <link rel="stylesheet" href="../style.css">
+        <style>
+        main {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 15px;
+          text-align: center;
+        }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div id="nav-placeholder"></div>
+        <script src="../menu.js"></script>
+        <script>loadMenu("../");</script>
+        <header>
+            <h1>COP4813 Class Project Assignment 4</h1>
+        </header>
+        <main>
+            <h1>Parametric Heart Grapher</h1>
+
+            <div>
+                <label for="valueX">X-Scale Factor (a):</label>
+                <input type="number" id="valueX" value="1" step="0.1">
+            </div>
+
+           <div>
+                <label for="valueY">Y-Scale Factor (b):</label>
+                <input type="number" id="valueY" value="1" step="0.1">
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="heartChart"></canvas>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const valueX = document.getElementById('valueX');
+                    const valueY = document.getElementById('valueY');
+                    const ctx = document.getElementById('heartChart').getContext('2d');
+
+                    let chartInstance = null;
+
+                    // Generate data points for the parametric heart equation
+                    function generateHeartData(x, y) {
+                        const data = [];
+                        // t goes from 0 to 2*PI
+                        for (let t = 0; t <= 2 * Math.PI; t += 0.05) {
+                            // x = a * 16 * sin^3(t)
+                            const pointX = x * 16 * Math.pow(Math.sin(t), 3);
+
+                            // y = b * (13 * cos(t) - 5 * cos(2t) - 2 * cos(3t) - cos(4t))
+                            const pointY = y * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+
+                            data.push({ x: pointX, y: pointY});
+                        }
+
+                        // Loop closes by adding 2*PI point
+                        const tEnd = 2 * Math.PI;
+                        const xEnd = x * 16 * Math.pow(Math.sin(tEnd), 3);
+                        const yEnd = y * (13 * Math.cos(tEnd) - 5 * Math.cos(2 * tEnd) - 2 * Math.cos(3 * tEnd) - Math.cos(4 * tEnd));
+                        data.push({ x: xEnd, y: yEnd });
+
+                        return data;
+                    }
+
+                    // Initialize or update chart
+                    function updateChart() {
+                        // Parse inputs or fallback to 0- if invalid
+                        const x = parseFloat(valueX.value) || 0;
+                        const y = parseFloat(valueY.value) || 0;
+
+                        const dataset = generateHeartData(x, y);
+
+                        // Calculate dynamic bounds for graph scaling
+                        const maxValue = Math.max(Math.abs(x * 20), Math.abs(y * 20), 20);
+
+                        if (chartInstance) {
+                            chartInstance.data.datasets[0].data = dataset;
+
+                            // Keep axis symmetrical
+                            chartInstance.options.scales.x.min = -maxValue;
+                            chartInstance.options.scales.x.max = maxValue;
+                            chartInstance.options.scales.y.min = -maxValue;
+                            chartInstance.options.scales.y.max = maxValue
+
+                            chartInstance.update();
+                        } else {
+                            chartInstance = new Chart(ctx, {
+                                type: 'scatter',
+                                data: {
+                                    datasets: [{
+                                        label: '',
+                                        data: dataset,
+                                        showLine: true,
+                                        fill: false,
+                                        pointRadius: 0
+                                    }]
+                                },
+                                options: {
+                                    plugins: {
+                                        legend: {
+                                            display: false // hide default label on chart
+                                        }
+                                    },
+                                    responsive: true,
+                                    scales: {
+                                        x: {
+                                            type: 'linear',
+                                            position: 'center',
+                                            min: -maxValue,
+                                            max: maxValue
+                                        },
+                                        y: {
+                                            type: 'linear',
+                                            position: 'center',
+                                            min: -maxValue,
+                                            max: maxValue
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    // Update chart when user changes chart values
+                    valueX.addEventListener('input', updateChart);
+                    valueY.addEventListener('input', updateChart);
+                    updateChart();
+                });
+            </script>
+        </main>
+
+        <footer>
+            <p>Created by Noah Maynard</p>
+        </footer>
+    </body>
+</html>
