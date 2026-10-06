@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COP4813 Assignment 6: JSON</title>
+        <link rel="stylesheet" href="../style.css">
+        <style>
+            .dashboard h1 {
+                margin: 0;
+                color: var(--theme-white);
+                font-size: 1.8rem;
+            }
+
+            .dashboard, .dashboard * {
+                box-sizing: border-box;
+            }
+
+            .dashboard {
+                background-color: var(--theme-black);
+                border-left: 5px solid var(--theme-orange);
+                border-radius: 8px;
+                padding: 2rem;
+                width: 100%;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+                height: fit-content;
+                margin: 0 auto;
+            }
+
+            .profile-header {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                border-bottom: 2px solid var(--theme-cream);
+                padding-bottom: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .profile-icon-container {
+                position: relative;
+            }
+
+            #profile-icon {
+                width: 85px;
+                height: 85px;
+                border-radius: 50%;
+                border: 3px solid var(--theme-orange);
+                margin-top: 0;
+            }
+
+            .summoner-level {
+                position: absolute;
+                bottom: -8px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: var(--theme-darker-orange);
+                color: var(--theme-white);
+                font-size: 0.8rem;
+                padding: 2px 10px;
+                border-radius: 12px;
+                font-weight: bold;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            .rank-info {
+                color: var(--theme-orange);
+                font-weight: bold;
+                font-size: 1.1rem;
+                margin-top: 0.3rem;
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-box {
+                background-color: var(--theme-cream);
+                padding: 1.2rem;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .stat-box h3 {
+                margin: 0 0 0.5rem 0;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                color: var(--theme-black);
+                opacity: 0.7;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--theme-black);
+            }
+
+            .win-rate {
+                color: var(--theme-darker-orange);
+            }
+
+            .champions-section h3 {
+                margin: 0 0 1rem 0;
+                color: var(--theme-black);
+                font-size: 1.1rem;
+                border-bottom: 2px solid var(--theme-cream);
+                padding-bottom: 0.5rem;
+            }
+
+            .champions-list {
+                display: flex;
+                gap: 1rem;
+                justify-content: space-between;
+            }
+
+            .champion-card {
+                background-color: var(--theme-cream);
+                padding: 1rem;
+                border-radius: 8px;
+                text-align: center;
+                flex: 1;
+            }
+
+            .champion-card img {
+                width: 65px;
+                height: 65px;
+                border-radius: 8px;
+                margin: 0 auto 0.6rem auto;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .loading {
+                text-align: center;
+                font-style: italic;
+                opacity: 0.7;
+                padding: 2rem;
+            }
+
+            .explanation-box {
+                background-color: var(--theme-black);
+                color: var(--theme-cream);
+                padding: 1.5rem 2rem;
+                border-radius: 8px;
+                margin-bottom: 2rem;
+                border-left: 5px solid var(--theme-orange);
+                box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            }
+
+            .explanation-box h2 {
+                color: var(--theme-white);
+                margin-top: 0;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid rgba(244, 235, 225, 0.1); /* faded cream */
+                padding-bottom: 0.5rem;
+            }
+
+            /* Styling for the raw JSON display */
+            .json-section {
+                margin-bottom: 2.5rem;
+            }
+
+            .json-section h2 {
+                color: var(--theme-black);
+                margin-bottom: 0.5rem;
+            }
+
+            pre.json-display {
+                background-color: var(--theme-black);
+                color: var(--theme-cream);
+                padding: 1rem;
+                border-radius: 4px;
+                overflow-x: auto;
+                font-family: 'VT323', monospace;
+                font-size: 1.1rem;
+                border-left: 5px solid var(--theme-orange);
+                margin-top: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="nav-placeholder"></div>
+        <script src="../menu.js"></script>
+        <script>loadMenu("../");</script>
+        <main>
+            <section class="explanation-box">
+                <h2>Data Pipeline & Architecture</h2>
+                <p>I am using the free tier of hosting from render.com which may cause a one minute delay when fetching the API data.</p>
+                <p>This dashboard is powered by a .NET Minimal API proxy hosted in the cloud to allow secure use of private API keys.</p>
+                <p>The C# worker utilizes <code>HttpClient</code> to chain four Riot endpoints. Fetching the global PUUID, The summoner profile icon and summoner level, extracting the Ranked Solo/Duo standings, and pulling the top five Champion Masteries. It normalizes this data into a single JSON payload, which is ingested to populate the UI dynamically below.</p>
+            </section>
+            <section class="json-section">
+                <h2>Raw JSON Payload</h2>
+                <p>This is the normalized data structure returned by the C# proxy:</p>
+                <pre class="json-display"><code id="raw-json">LoadingJSON...</code></pre>
+            </section>
+            <section>
+                <div class="dashboard" id="dashboard">
+                    <div class="loading" id="loading-state">Fetching live stats from proxy...</div>
+
+                    <div id="content" style="display: none;">
+                        <div class="profile-header">
+                            <div class="profile-icon-container">
+                                <img id="profile-icon" src="" alt="Summoner Icon">
+                                <div class="summoner-level" id="summoner-level"></div>
+                            </div>
+                            <div>
+                                <h1 id="player-name"></h1>
+                                <div class="rank-info" id="player-rank"></div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <h3 style="color: var(--theme-black)">Ranked Record</h3>
+                                <div class="stat-value">
+                                    <span id="wins">0</span>W - <span id="losses">0</span>L
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <h3 style="color: var(--theme-black)">Win Rate</h3>
+                                <div class="stat-value win-rate" id="win-rate">0%</div>
+                            </div>
+                        </div>
+
+                        <div class="champions-section">
+                            <h3 style="text-align: center; color: var(--theme-cream)">Top Played Champions</h3>
+                            <div class="champions-list" id="champions-list">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Created by Noah Maynard</p>
+        </footer>
+
+        <script>
+            const PROXY_URL = 'https://riot-api-proxy-a2d8.onrender.com/api/playerstats';
+
+            async function initDashboard() {
+                try {
+                    // Fetch stats from backend
+                    const statsResponse = await fetch(PROXY_URL);
+                    if (!statsResponse.ok) throw new Error('Failed to fetch from proxy');
+                    const stats = await statsResponse.json();
+
+                    // Fetch latest Data Dragon version for image URLs
+                    const versionResponse = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+                    const versions = await versionResponse.json();
+                    const latestVersion = versions[0];
+
+                    // Fetch champion mapping
+                    const champResponse = await fetch(`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/champion.json`);
+                    const champData = await champResponse.json();
+                    const championDict = Object.values(champData.data);
+
+                    document.getElementById('raw-json').innerText = JSON.stringify(stats, null, 4);
+
+                    renderDashboard(stats, latestVersion, championDict);
+                }
+                catch (error)
+                {
+                    console.error(error);
+                    document.getElementById('loading-state').innerText = 'Error loading stats. Confirm Proxy server is running.'
+                }
+            }
+            function renderDashboard(stats, version, championDict) {
+                document.getElementById('loading-state').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+                // Populate Text
+                document.getElementById('player-name').innerText = stats.player;
+                document.getElementById('player-rank').innerText = stats.rank === "Unranked" ? "Unranked" : `${stats.rank} (${stats.leaguePoints} LP)`;
+                document.getElementById('summoner-level').innerText = stats.summonerLevel;
+                
+                // Populate Images
+                document.getElementById('profile-icon').src = `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/${stats.profileIconId}.png`;
+
+                // Calculate Win Rate
+                document.getElementById('wins').innerText = stats.wins;
+                document.getElementById('losses').innerText = stats.losses;
+                const totalGames = stats.wins + stats.losses;
+                const winRate = totalGames > 0 ? Math.round((stats.wins / totalGames) * 100) : 0;
+                document.getElementById('win-rate').innerText = `${winRate}%`;
+
+                // Populate Champion Cards
+                const champContainer = document.getElementById('champions-list');
+                
+                stats.topChampions.forEach(champ => {
+                    const champDetails = championDict.find(c => parseInt(c.key) === champ.championId);
+                    const champInternalName = champDetails ? champDetails.id : 'Unknown';
+                    const champDisplayName = champDetails ? champDetails.name : 'Unknown';
+
+                    const card = document.createElement('div');
+                    card.className = 'champion-card';
+                    card.innerHTML = `
+                        <img src="https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champInternalName}.png" alt="${champDisplayName}">
+                        <div style="font-size: 0.95rem; color: var(--theme-black); font-weight: 600;">${champDisplayName}</div>
+                        <div style="font-size: 0.8rem; color: var(--theme-darker-orange); margin-top: 4px;">Mastery ${champ.masteryLevel}</div>
+                    `;
+                    champContainer.appendChild(card);
+                });
+            }
+
+            initDashboard();
+        </script>
+    </body>
+</html>
