@@ -187,8 +187,8 @@
             <section class="explanation-box">
                 <h2>Data Pipeline & Architecture</h2>
                 <p>I am using the free tier of hosting from render.com which may cause a one minute delay when fetching the API data.</p>
-                <p>This dashboard is powered by a .NET Minimal API proxy hosted in the cloud to allow secure use of private API keys.</p>
-                <p>The C# worker utilizes <code>HttpClient</code> to chain four Riot endpoints. Fetching the global PUUID, The summoner profile icon and summoner level, extracting the Ranked Solo/Duo standings, and pulling the top five Champion Masteries. It normalizes this data into a single JSON payload, which is ingested to populate the UI dynamically below.</p>
+                <p>This dashboard is powered by a .NET Minimal API proxy hosted using render.com's free tier to allow secure use of private API keys.</p>
+                <p>The C# worker utilizes <code>HttpClient</code> to chain four Riot endpoints. Fetching the global PUUID, The summoner profile icon and summoner level, extracting the Ranked Solo/Duo standings, and pulling the top five Champion Masteries. The worker normalizes this data into a single JSON payload, which is ingested to populate the UI dynamically below.</p>
             </section>
             <section class="json-section">
                 <h2>Raw JSON Payload</h2>
