@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COP4813 Assignment 7: Drag Drop</title>
+        <link rel="stylesheet" href="../style.css">
+        <style>
+            /* Game Board Styling */
+            .game-container {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+                align-items: center;
+                margin-top: 1.5rem;
+                padding: 1.5rem;
+                background-color: var(--theme-cream);
+                border-radius: 8px;
+                border: 3px solid var(--theme-black);
+            }
+
+            .score-board {
+                font-family: 'VT323', monospace;
+                font-size: 2rem;
+                color: var(--theme-orange);
+                margin-top: 1rem;
+            }
+
+            /* The spawner platform */
+            .drag-section {
+                width: 100px;
+                height: 100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 4px dashed var(--theme-orange);
+                background-color: var(--theme-white);
+                border-radius: 8px;
+            }
+
+            /* The draggable shape */
+            .shape {
+                width: 60px;
+                height: 60px;
+                background-color: var(--theme-darker-orange);
+                cursor: grab;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+                touch-action: none;
+            }
+
+            .shape:active {
+                cursor: grabbing;
+            }
+
+            .is-touch-dragging {
+                position: fixed;
+                z-index: 9999;
+                opacity: 0.8;
+                pointer-events: none;
+            }
+
+            /* The Drop Holes Container */
+            .drop-section {
+                display: flex;
+                flex-direction: row;
+                gap: 1.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .drop-hole {
+                width: 75px;
+                height: 75px;
+                background-color: var(--theme-black);
+                opacity: 0.15;
+                transition: all 0.2s ease;
+            }
+
+            .drop-hole.drag-over {
+                background-color: var(--theme-orange);
+                opacity: 0.6;
+                transform: scale(1.15); 
+            }
+
+            .is-square, .hole-square { 
+                border-radius: 8px; 
+            }
+
+            .is-circle, .hole-circle { 
+                border-radius: 50%; 
+            }
+
+            .is-triangle, .hole-triangle { 
+                clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+                border-radius: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <section class="white-box" style="text-align: center;">
+                <h2>Shape Sorting :D</h2>
+                <p>Drag the shape to the matching hole to score points</p>
+                
+                <div class="score-board">
+                    Score: <span id="score">0</span>
+                </div>
+
+                <div class="game-container">
+                    <div class="drag-section" id="drag-section">
+                    </div>
+                    <div class="drop-section">
+                        <div class="drop-hole hole-square" data-shape="square"></div>
+                        <div class="drop-hole hole-circle" data-shape="circle"></div>
+                        <div class="drop-hole hole-triangle" data-shape="triangle"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </body>
+    <footer>
+            <p>Created by Noah Maynard</p>    
+    </footer>
+    <script>
+        const shapes = ['square', 'circle', 'triangle'];
+        let currentShape = '';
+        let score = 0;
+
+        const dragSection = document.getElementById('drag-section');
+        const scoreDisplay = document.getElementById('score');
+        const dropHoles = document.querySelectorAll('.drop-hole');
+
+        // Helper function to update the score and reset the board
+        function handleScoreCalculation(draggedShapeType, targetShapeType) {
+            if (draggedShapeType === targetShapeType) {
+                score++;
+                scoreDisplay.style.color = "green";
+            } else {
+                score--;
+                scoreDisplay.style.color = "red";
+            }
+            
+            scoreDisplay.innerText = score;
+            setTimeout(() => {
+                scoreDisplay.style.color = "var(--theme-orange)";
+            }, 600);
+
+            spawnShape();
+        }
+
+        function spawnShape() {
+            dragSection.innerHTML = ''; 
+            currentShape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            const shapeEl = document.createElement('div');
+            shapeEl.classList.add('shape', `is-${currentShape}`);
+            shapeEl.setAttribute('draggable', 'true');
+            
+            // Desktop mouse events
+            shapeEl.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', currentShape);
+                setTimeout(() => shapeEl.style.opacity = '0.4', 0);
+            });
+
+            shapeEl.addEventListener('dragend', () => {
+                shapeEl.style.opacity = '1';
+            });
+
+            // Mobile touch events
+            shapeEl.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevents the screen from scrolling
+                shapeEl.classList.add('is-touch-dragging');
+                
+                // Center the shape under the finger immediately
+                const touch = e.touches[0];
+                shapeEl.style.left = touch.clientX - (shapeEl.offsetWidth / 2) + 'px';
+                shapeEl.style.top = touch.clientY - (shapeEl.offsetHeight / 2) + 'px';
+            }, { passive: false });
+
+            shapeEl.addEventListener('touchmove', (e) => {
+                e.preventDefault(); // Keeps the screen locked while dragging
+                const touch = e.touches[0];
+                shapeEl.style.left = touch.clientX - (shapeEl.offsetWidth / 2) + 'px';
+                shapeEl.style.top = touch.clientY - (shapeEl.offsetHeight / 2) + 'px';
+            }, { passive: false });
+
+            shapeEl.addEventListener('touchend', (e) => {
+                shapeEl.classList.remove('is-touch-dragging');
+                shapeEl.style.left = '';
+                shapeEl.style.top = '';
+                
+                // Find out what element is under the finger when released
+                const touch = e.changedTouches[0];
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+
+                // Check if the element below is one of our holes
+                if (elementBelow && elementBelow.classList.contains('drop-hole')) {
+                    const targetShapeType = elementBelow.getAttribute('data-shape');
+                    handleScoreCalculation(currentShape, targetShapeType);
+                }
+                // If they drop it anywhere else, snap shape back to spawn box
+            });
+
+            dragSection.appendChild(shapeEl);
+        }
+
+        // Setup Desktop Drop Zones
+        dropHoles.forEach(hole => {
+            hole.addEventListener('dragover', (e) => {
+                e.preventDefault(); 
+                hole.classList.add('drag-over');
+            });
+
+            hole.addEventListener('dragleave', () => {
+                hole.classList.remove('drag-over');
+            });
+
+            hole.addEventListener('drop', (e) => {
+                e.preventDefault();
+                hole.classList.remove('drag-over');
+                
+                const draggedShapeType = e.dataTransfer.getData('text/plain');
+                const targetShapeType = hole.getAttribute('data-shape');
+
+                handleScoreCalculation(draggedShapeType, targetShapeType);
+            });
+        });
+
+        spawnShape();
+    </script>
+</html>

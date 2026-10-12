@@ -17,6 +17,7 @@ function loadMenu(basePath) {
                     <li><a href="${basePath}assignments/assignment3.html">Assignment 3</a></li>
                     <li><a href="${basePath}assignments/assignment4.html">Assignment 4</a></li>
                     <li><a href="${basePath}assignments/assignment6.html">Assignment 6</a></li>
+                    <li><a href="${basePath}assignments/assignment7.html">Assignment 7</a></li>
                 </ul>
             </li>
             <li class="dropdown-nav">
