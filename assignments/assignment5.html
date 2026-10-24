@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COP4813 Assignment 5: Canvas</title>
+        <link rel="stylesheet" href="../style.css">
+        <style>
+            .spiro-container {
+                background-color: var(--theme-white);
+                padding: 2rem;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                border-radius: 8px;
+                margin: 2rem auto;
+                max-width: 800px;
+                text-align: center;
+            }
+
+            h2 {
+                color: var(--theme-black);
+                margin-top: 0;
+                border-bottom: 2px solid var(--theme-cream);
+                padding-bottom: 0.5rem;
+            }
+
+            .spiro-layout {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 2rem;
+                justify-content: center;
+                align-items: flex-start;
+                margin-top: 1.5rem;
+            }
+
+            canvas {
+                background-color: var(--theme-cream);
+                border: 4px solid var(--theme-black);
+                border-radius: 4px;
+                box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+                max-width: 100%;
+                height: auto;
+            }
+
+            .controls {
+                background-color: var(--theme-black);
+                color: var(--theme-cream);
+                padding: 1.5rem;
+                border-radius: 8px;
+                border-left: 5px solid var(--theme-orange);
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                min-width: 250px;
+                text-align: left;
+            }
+
+            .input-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+
+            .input-group label {
+                font-size: 0.9rem;
+                font-weight: bold;
+                color: var(--theme-white);
+            }
+
+            .input-group input {
+                padding: 0.5rem;
+                font-family: inherit;
+                border: 2px solid var(--theme-darker);
+                border-radius: 4px;
+                background-color: var(--theme-white);
+                color: var(--theme-black);
+            }
+
+            .input-group small {
+                font-size: 0.75rem;
+                color: var(--theme-orange);
+            }
+
+            button {
+                background-color: var(--theme-orange);
+                color: var(--theme-white);
+                border: none;
+                padding: 0.8rem;
+                font-weight: bold;
+                font-size: 1rem;
+                cursor: pointer;
+                border-radius: 4px;
+                transition: background-color 0.2s;
+                margin-top: 0.5rem;
+            }
+
+            button:hover {
+                background-color: var(--theme-darker-orange);
+            }
+
+            #error-msg {
+                color: #ff4d4d;
+                font-weight: bold;
+                font-size: 0.9rem;
+                min-height: 1.2rem;
+            }
+
+            @media (max-width: 768px) {
+                .spiro-container {
+                    padding: 1rem;
+                    margin: 1rem;
+                }
+
+                .spiro-layout {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 1.5rem;
+                }
+
+                canvas {
+                    width: 100%; /* Forces canvas to fill the available space */
+                    height: auto;
+                    aspect-ratio: 1 / 1; /* Keeps the drawing perfectly square */
+                }
+
+                .controls {
+                    padding: 1rem;
+                    min-width: unset;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .input-group input {
+                    font-size: 16px; /* Strictly set to 16px to prevent iOS auto-zoom bug */
+                    padding: 0.75rem; /* Taller touch target for thumbs */
+                }
+
+                button {
+                    padding: 1rem; /* Taller button for easier tapping */
+                    margin-top: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="nav-placeholder"></div>
+        <script src="../menu.js"></script>
+        <script>loadMenu("../");</script>
+        <header>
+            <h1>COP4813 Class Project Assignment 4</h1>
+        </header>
+        <main>
+            <section class="spiro-container">
+                <h2>Parametric Spirograph Generator</h2>
+                
+                <div class="spiro-layout">
+
+                    <div class="controls">
+                        <div class="input-group">
+                            <label for="input-R">Outer Radius (R)</label>
+                            <input type="number" id="input-R" value="100" min="20" max="200" step="1">
+                            <small>Valid range: 20 to 200</small>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="input-r">Inner Radius (r)</label>
+                            <input type="number" id="input-r" value="28" min="1" max="100" step="1">
+                            <small>Valid range: 1 to 100</small>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="input-O">Pen Offset (O)</label>
+                            <input type="number" id="input-O" value="30" min="1" max="150" step="1">
+                            <small>Valid range: 1 to 150</small>
+                        </div>
+
+                        <div id="error-msg"></div>
+
+                        <button id="draw-btn">Start Drawing</button>
+                    </div>
+
+                    <div>
+                        <canvas id="spiroCanvas" width="500" height="500"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>Created by Noah Maynard</p>
+        </footer>
+        <script>
+            const canvas = document.getElementById('spiroCanvas');
+            const ctx = canvas.getContext('2d');
+            const drawBtn = document.getElementById('draw-btn');
+            const errorMsg = document.getElementById('error-msg');
+
+            let animationId; // Used to cancel the previous drawing if button is clicked again
+
+            function validateInputs(R, r, O) {
+                // Clear previous errors
+                errorMsg.innerText = "";
+                
+                if (isNaN(R) || R < 20 || R > 200) {
+                    errorMsg.innerText = "Error: Outer Radius (R) must be between 20 and 200.";
+                    return false;
+                }
+                if (isNaN(r) || r < 1 || r > 100) {
+                    errorMsg.innerText = "Error: Inner Radius (r) must be between 1 and 100.";
+                    return false;
+                }
+                if (isNaN(O) || O < 1 || O > 150) {
+                    errorMsg.innerText = "Error: Pen Offset (O) must be between 1 and 150.";
+                    return false;
+                }
+                return true;
+            }
+
+            function startSpirograph() {
+                // Get Inputs
+                const R = parseFloat(document.getElementById('input-R').value);
+                const r = parseFloat(document.getElementById('input-r').value);
+                const O = parseFloat(document.getElementById('input-O').value);
+
+                // Validate
+                if (!validateInputs(R, r, O)) return;
+
+                // Reset Canvas 
+                if (animationId) cancelAnimationFrame(animationId);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Disable button during initialization
+                drawBtn.disabled = true;
+                drawBtn.innerText = "Drawing...";
+
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = "var(--theme-darker-orange)";
+                ctx.lineWidth = 1.5;
+
+                // Move to the starting position
+                let startX = centerX + ((R + r) * Math.cos(0) - (r + O) * Math.cos(0));
+                let startY = centerY + ((R + r) * Math.sin(0) - (r + O) * Math.sin(0));
+                ctx.moveTo(startX, startY);
+
+                // Animation Variables
+                let t = 0;
+                const speed = 0.05;
+                const stepsPerFrame = 1;
+                const maxT = 100 * Math.PI;
+                
+                // Drawing loop
+                function drawFrame() {
+                    // Draw multiple points per frame to improve draw time
+                    for (let i = 0; i < stepsPerFrame; i++) {
+                        t += speed;
+                        
+                        // The required parametric equations
+                        let x = (R + r) * Math.cos(t) - (r + O) * Math.cos(((R + r) / r) * t);
+                        let y = (R + r) * Math.sin(t) - (r + O) * Math.sin(((R + r) / r) * t);
+                        
+                        ctx.lineTo(centerX + x, centerY + y);
+                    }
+                    
+                    ctx.stroke();
+
+                    // Continue animating until upper limit
+                    if (t < maxT) {
+                        animationId = requestAnimationFrame(drawFrame);
+                    } else {
+                        drawBtn.disabled = false;
+                        drawBtn.innerText = "Start Drawing";
+                    }
+                }
+
+                // Start the animation
+                drawFrame();
+            }
+
+            // Attach event listener
+            drawBtn.addEventListener('click', startSpirograph);
+        </script>
+    </body>
+</html>

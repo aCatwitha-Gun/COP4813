@@ -10,12 +10,13 @@ function loadMenu(basePath) {
         <ul class="nav-list">
             <li><a href="${basePath}index.html">Home</a></li>
             <li class="dropdown-nav">
-                <a href="#" class="nav-dropdown-toggle">Assignments</a>
+                <a href="#" class="nav-dropdown-toggle">COP4813 Assignments</a>
                 <ul class="dropdown-content-nav">
-                    <li><a href="${basePath}index.html">Assignment 1</a></li>
+                    <li><a href="${basePath}assignments/assignment1.html">Assignment 1</a></li>
                     <li><a href="${basePath}assignments/assignment2.html">Assignment 2</a></li>
                     <li><a href="${basePath}assignments/assignment3.html">Assignment 3</a></li>
                     <li><a href="${basePath}assignments/assignment4.html">Assignment 4</a></li>
+                    <li><a href="${basePath}assignments/assignment5.html">Assignment 5</a></li>
                     <li><a href="${basePath}assignments/assignment6.html">Assignment 6</a></li>
                     <li><a href="${basePath}assignments/assignment7.html">Assignment 7</a></li>
                 </ul>
